@@ -6,9 +6,13 @@ import { useEffect } from 'react';
 
 function App() {
   const [foods, setFoods] = useState([]);
+  //filter
   const [displayFoods, setDisplayFoods] = useState([]);
   const [categoryName, setCategoryName] = useState('all');
+  //search
   const [searchValue, setSearchValue] = useState('');
+  //sort
+  const [sorted, setSorted] = useState({sorted:"price", reversed: false});
 
 
   useEffect(() => {
@@ -20,7 +24,7 @@ function App() {
         });
 },[])
 
-  // search part 
+  /////////////////////////////////////// search part 
 
   const handleFilterSearch = (e) => {
     if (e.target.value === '') {
@@ -43,7 +47,7 @@ function App() {
   
   
   
-  // filter part 
+  ////////////////////////////////////// filter part 
   const filterContinent = (e) => {
     setCategoryName(e.target.value);
   }
@@ -54,14 +58,44 @@ function App() {
       return;
     }
     setDisplayFoods(foods.filter(food => food.category === categoryName))
-  },[categoryName])
+  }, [categoryName])
+  
+
+  /////////////////////////////////sort functionality
+  const sortByPriceHTL = () => {
+    setSorted({ sorted: "price", reversed: !sorted.reversed })
+    const dataCopy = [...foods];
+    dataCopy.sort((foodA, foodB) => {
+      // if (sorted.reversed) {
+      //   return foodA.price - foodB.price;
+      // }
+      return foodB.price - foodA.price;
+    })
+    // console.log(dataCopy);
+    setDisplayFoods(dataCopy);
+  }
+
+
+  const sortByPriceLTH = () => {
+    setSorted({ sorted: "price", reversed: !sorted.reversed })
+    const dataCopy = [...foods];
+    dataCopy.sort((foodA, foodB) => {
+        return foodA.price - foodB.price;
+    })
+    // console.log(dataCopy);
+    setDisplayFoods(dataCopy);
+  }
+
+
+
+
 
   return (
     <div className='container mt-3'>
       <div className="row">
         <div className="col-md-4">
           {/* all filter in left */}
-          <AllFilters searchValue={searchValue} handleFilterSearch={handleFilterSearch} setCategoryName={setCategoryName} filterContinent={filterContinent}></AllFilters>
+          <AllFilters searchValue={searchValue} handleFilterSearch={handleFilterSearch} setCategoryName={setCategoryName} filterContinent={filterContinent} sortByPriceHTL={sortByPriceHTL} sortByPriceLTH={sortByPriceLTH}></AllFilters>
         </div>
         <div className="col-md-8">
           {/* all Foods */}
